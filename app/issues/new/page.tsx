@@ -2,8 +2,8 @@
 
 import "easymde/dist/easymde.min.css";
 
+import { TextField, Button, Callout } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
-import { TextField, Button, Callout, Text } from "@radix-ui/themes";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -12,8 +12,8 @@ import { z } from "zod";
 
 import ErrorMessage from "@/app/components/ErrorMessage";
 import SimpleMDE from "react-simplemde-editor";
-import axios from "axios";
 import Spinner from "@/app/components/Spinner";
+import axios from "axios";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -30,6 +30,17 @@ const NewIssuePage = () => {
     resolver: zodResolver(createIssueSchema),
   });
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setIsSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (err) {
+      setIsSubmitting(false);
+      setError("An unexpected error occurred.");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -37,19 +48,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setIsSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (err) {
-            setIsSubmitting(false);
-            setError("An unexpected error occurred.");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
