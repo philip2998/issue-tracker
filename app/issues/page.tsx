@@ -1,5 +1,6 @@
 import { Button, Table } from "@radix-ui/themes";
 
+import IssueStatusBadge from "../components/IssueStatusBadge";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 
@@ -8,9 +9,6 @@ const IssuesPage = async () => {
 
   return (
     <div>
-      <Button>
-        <Link href="/issues/new">New Issue</Link>
-      </Button>
       <div className="mb-5">
         <Button>
           <Link href="/issues/new">New Issue</Link>
@@ -34,6 +32,12 @@ const IssuesPage = async () => {
               <Table.Cell>
                 {issue.title}
                 <div className="block md:hidden">{issue.status}</div>
+                <div className="block md:hidden">
+                  <IssueStatusBadge status={issue.status} />
+                </div>
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                <IssueStatusBadge status={issue.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {issue.status}
