@@ -11,9 +11,13 @@ import { useState } from "react";
 import { z } from "zod";
 
 import ErrorMessage from "@/app/components/ErrorMessage";
-import SimpleMDE from "react-simplemde-editor";
 import Spinner from "@/app/components/Spinner";
+import dynamic from "next/dynamic";
 import axios from "axios";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
